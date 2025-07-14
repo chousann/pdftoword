@@ -1,0 +1,29 @@
+<div class="settings-group">
+  <span class="settings-label">保留原始排版</span>
+  <label class="switch">
+    <input type="checkbox" 
+           [checked]="settings.preserveLayout"
+           (change)="onSettingChange('preserveLayout')">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="settings-group">
+  <span class="settings-label">自动下载结果</span>
+  <label class="switch">
+    <input type="checkbox" 
+           [checked]="settings.autoDownload"
+           (change)="onSettingChange('autoDownload')">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<div class="settings-group">
+  <span class="settings-label">通知提醒</span>
+  <label class="switch">
+    <input type="checkbox" 
+           [checked]="settings.notifications"
+           (change)="onSettingChange('notifications')">
+    <span class="slider"></span>
+  </label>
+</div> 

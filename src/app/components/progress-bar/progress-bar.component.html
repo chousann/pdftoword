@@ -1,0 +1,13 @@
+<div class="progress-bar" *ngIf="show">
+  <div class="progress-fill" [style.width.%]="progress"></div>
+</div>
+
+<div class="status" 
+     [class.success]="statusType === 'success'"
+     [class.error]="statusType === 'error'"
+     *ngIf="status">
+  <i class="fa-solid" 
+     [class.fa-circle-check]="statusType === 'success'"
+     [class.fa-circle-xmark]="statusType === 'error'"></i> 
+  {{ status }}
+</div> 

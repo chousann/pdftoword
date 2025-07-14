@@ -1,0 +1,45 @@
+<div class="container">
+  <div class="title">
+    <i class="fa-solid fa-file-pdf" style="color:#e74c3c"></i> PDF转Word工具
+  </div>
+  <div class="desc">一键将PDF文件高质量转换为Word文档，安全、快速、免费</div>
+  
+  <!-- Tab导航 -->
+  <div class="tabs">
+    <div class="tab" [class.active]="activeTab === 'convert'" (click)="switchTab('convert')">
+      <i class="fa-solid fa-file-arrow-up"></i> 转换
+    </div>
+    <div class="tab" [class.active]="activeTab === 'history'" (click)="switchTab('history')">
+      <i class="fa-solid fa-clock-rotate-left"></i> 历史
+    </div>
+    <div class="tab" [class.active]="activeTab === 'settings'" (click)="switchTab('settings')">
+      <i class="fa-solid fa-gear"></i> 设置
+    </div>
+  </div>
+
+  <!-- 转换Tab -->
+  <div *ngIf="activeTab === 'convert'">
+    <app-file-upload (filesSelected)="onFilesSelected($event)"></app-file-upload>
+    <app-file-list 
+      [files]="files"
+      (removeFile)="onRemoveFile($event)"
+      (convertFiles)="onConvertFiles()">
+    </app-file-list>
+    <app-progress-bar 
+      [progress]="progress"
+      [show]="showProgress"
+      [status]="status"
+      [statusType]="statusType">
+    </app-progress-bar>
+  </div>
+
+  <!-- 历史Tab -->
+  <div *ngIf="activeTab === 'history'">
+    <app-history></app-history>
+  </div>
+
+  <!-- 设置Tab -->
+  <div *ngIf="activeTab === 'settings'">
+    <app-settings></app-settings>
+  </div>
+</div> 

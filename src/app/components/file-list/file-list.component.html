@@ -1,0 +1,29 @@
+<ul class="file-list">
+  <li class="file-item" *ngFor="let fileItem of files; let i = index">
+    <div class="file-info">
+      <i class="fa-solid fa-file-pdf" style="color:#e74c3c"></i>
+      <span class="file-name">{{ fileItem.file.name }}</span>
+    </div>
+    <div>
+      <span class="file-status" [style.color]="getStatusColor(fileItem.status)">
+        {{ getStatusText(fileItem.status) }}
+      </span>
+      <i class="fa-solid fa-xmark file-remove" 
+         title="移除" 
+         (click)="onRemoveFile(i)"
+         *ngIf="fileItem.status === 'pending'"></i>
+      <a *ngIf="fileItem.status === 'completed' && fileItem.downloadUrl" 
+         [href]="fileItem.downloadUrl" 
+         class="download-link" 
+         download>
+        <i class="fa-solid fa-download"></i> 下载
+      </a>
+    </div>
+  </li>
+</ul>
+
+<button class="convert-btn" 
+        [disabled]="isConvertDisabled"
+        (click)="onConvertFiles()">
+  开始转换
+</button> 

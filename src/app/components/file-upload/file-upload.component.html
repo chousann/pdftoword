@@ -1,0 +1,12 @@
+<div class="upload-area" 
+     [class.dragover]="isDragOver"
+     (dragover)="onDragOver($event)"
+     (dragleave)="onDragLeave($event)"
+     (drop)="onDrop($event)">
+  <i class="fa-solid fa-cloud-arrow-up fa-2x"></i>
+  <div>拖拽PDF文件到此处，或 
+    <label for="file-input" style="color:#0078d7;cursor:pointer;">点击上传</label>
+  </div>
+  <input id="file-input" type="file" accept=".pdf" multiple 
+         style="display:none" (change)="onFileSelected($event)">
+</div> 

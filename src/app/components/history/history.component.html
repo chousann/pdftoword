@@ -1,0 +1,21 @@
+<ul class="history-list">
+  <li class="history-item" *ngFor="let item of historyItems">
+    <span>
+      <i class="fa-solid fa-file-pdf" style="color:#e74c3c"></i> 
+      {{ item.fileName }}
+    </span>
+    <div>
+      <a *ngIf="item.status === 'completed' && item.downloadUrl" 
+         [href]="item.downloadUrl" 
+         class="download-link" 
+         download>
+        <i class="fa-solid fa-download"></i> 下载Word
+      </a>
+      <span *ngIf="item.status === 'failed'" 
+            class="file-status" 
+            [style.color]="getStatusColor(item.status)">
+        <i class="fa-solid fa-circle-xmark"></i> {{ getStatusText(item.status) }}
+      </span>
+    </div>
+  </li>
+</ul> 
