@@ -178,8 +178,11 @@ app.use((error, req, res, next) => {
   });
 });
 
-// 启动服务器
-app.listen(PORT, () => {
-  console.log(`PDF转Word服务器运行在端口 ${PORT}`);
-  console.log(`API地址: http://localhost:${PORT}/api`);
-}); 
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  app.listen(PORT, () => {
+    console.log(`PDF转Word服务器运行在端口 ${PORT}`);
+    console.log(`API地址: http://localhost:${PORT}/api`);
+  });
+} 
