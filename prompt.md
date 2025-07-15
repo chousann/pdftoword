@@ -11,3 +11,5 @@
 `
 根据原型图生成一个angular应用并完成应用所有功能的开发,包括pdf转word的后台api
 `
+
+我想要把后端api server，不包含前端，部署到vercel，请自动生成必要的配置文件，以便我可以从github轻松部署到vercel
