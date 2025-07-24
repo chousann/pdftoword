@@ -2,9 +2,11 @@
   "name": "pdf-to-word-converter",
   "version": "1.0.0",
   "description": "PDF转Word在线工具",
+  "main": "server/server.js",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "node server/server.js",
+    "ngstart": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
