@@ -7,7 +7,7 @@
     "ng": "ng",
     "serverstart": "node server/server.js",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href=/pdftoword/ && pwd && ls -l && cp dist/pdftoword/browser/index.html dist/pdftoword/browser/404.html",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "dev:server": "nodemon server/server.js",
