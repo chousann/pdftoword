@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface ConversionProgress {
   progress: number;
@@ -14,7 +15,7 @@ export interface ConversionProgress {
   providedIn: 'root'
 })
 export class PdfConverterService {
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = environment.apiURL;
   private progressSubject = new BehaviorSubject<ConversionProgress>({ progress: 0, status: '' });
   public progress$ = this.progressSubject.asObservable();
 
@@ -25,8 +26,9 @@ export class PdfConverterService {
     formData.append('pdf', file);
 
     return this.http.post(`${this.apiUrl}/convert`, formData, {
+      responseType: 'blob',
       reportProgress: true,
-      observe: 'events'
+      observe: 'response'
     }).pipe(
       map((event: HttpEvent<any>) => {
         switch (event.type) {
@@ -46,8 +48,11 @@ export class PdfConverterService {
                 downloadUrl: event.body.downloadUrl 
               });
             }
-            return event.body;
+            return event;
+          case HttpEventType.DownloadProgress:
 
+
+            return event;
           default:
             return event;
         }

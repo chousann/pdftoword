@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiURL: 'http://localhost:3000' // 生产环境后台api地址
+  apiURL: 'https://pdftoword-liart.vercel.app' // 生产环境后台api地址
 };

@@ -19,6 +19,10 @@ app.use(express.json());
 app.use(express.static('uploads'));
 app.use(express.static('downloads'));
 
+var buffer;
+var wordFileName;
+var wordPath;
+
 // 配置文件上传
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -98,35 +102,36 @@ app.post('/api/convert', upload.single('pdf'), async (req, res) => {
     });
 
     // 生成Word文件
-    const buffer = await Packer.toBuffer(doc);
-    const wordFileName = `${fileName}.docx`;
-    const wordPath = path.join(downloadDir, wordFileName);
+    buffer = await Packer.toBuffer(doc);
+    wordFileName = `${fileName}.docx`;
+    wordPath = path.join(downloadDir, wordFileName);
+    res.status(200).contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document").setHeader("content-disposition", "attachment; filename=\"pdf-1753358176578-242582799.docx\"").send(buffer);
     
-    fs.writeFileSync(wordPath, buffer);
+    // fs.writeFileSync(wordPath, buffer);
 
-    // 记录转换历史
-    const historyItem = {
-      id: Date.now().toString(),
-      originalName: req.file.originalname,
-      fileName: wordFileName,
-      status: 'completed',
-      downloadUrl: `/downloads/${wordFileName}`,
-      createdAt: new Date()
-    };
+    // // 记录转换历史
+    // const historyItem = {
+    //   id: Date.now().toString(),
+    //   originalName: req.file.originalname,
+    //   fileName: wordFileName,
+    //   status: 'completed',
+    //   downloadUrl: `/downloads/${wordFileName}`,
+    //   createdAt: new Date()
+    // };
     
-    conversionHistory.unshift(historyItem);
+    // conversionHistory.unshift(historyItem);
 
-    // 清理上传的PDF文件
-    fs.unlinkSync(pdfPath);
+    // // 清理上传的PDF文件
+    // fs.unlinkSync(pdfPath);
 
-    console.log(`转换完成: ${wordFileName}`);
+    // console.log(`转换完成: ${wordFileName}`);
     
-    res.json({
-      success: true,
-      message: '转换成功',
-      downloadUrl: `/downloads/${wordFileName}`,
-      fileName: wordFileName
-    });
+    // res.json({
+    //   success: true,
+    //   message: '转换成功',
+    //   downloadUrl: `/downloads/${wordFileName}`,
+    //   fileName: wordFileName
+    // });
 
   } catch (error) {
     console.error('转换失败:', error);

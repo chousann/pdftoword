@@ -64,9 +64,9 @@ export class AppComponent implements OnInit {
       
       this.pdfConverterService.convertPdfToWord(fileItem.file).subscribe({
         next: (response) => {
-          if (response.success) {
+          if (response.ok) {
             fileItem.status = 'completed';
-            fileItem.downloadUrl = environment.apiURL + response.downloadUrl;
+            fileItem.downloadUrl = window.URL.createObjectURL(response.body);
           } else {
             fileItem.status = 'error';
             fileItem.error = response.message;
