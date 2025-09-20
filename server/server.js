@@ -16,29 +16,16 @@ app.use(cors());
 app.use(helmet());
 app.use(compression());
 app.use(express.json());
-app.use(express.static('uploads'));
-app.use(express.static('downloads'));
+// 不在 Vercel 上使用本地静态上传/下载目录（Vercel 文件系统为只读）
 
 var buffer;
 var wordFileName;
 var wordPath;
 
-// 配置文件上传
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = 'uploads';
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.pdf');
-  }
-});
+// 配置文件上传：使用内存存储，避免写入磁盘（适配 Vercel 只读文件系统）
+const storage = multer.memoryStorage();
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
     if (file.mimetype === 'application/pdf') {
@@ -52,11 +39,8 @@ const upload = multer({
   }
 });
 
-// 确保下载目录存在
+// 不依赖本地下载目录（Vercel 上不可写）
 const downloadDir = 'downloads';
-// if (!fs.existsSync(downloadDir)) {
-//   fs.mkdirSync(downloadDir, { recursive: true });
-// }
 
 // 转换历史存储
 let conversionHistory = [];
@@ -64,20 +48,17 @@ let conversionHistory = [];
 // API路由
 app.post('/api/convert', upload.single('pdf'), async (req, res) => {
   try {
-    if (!fs.existsSync(downloadDir)) {
-      fs.mkdirSync(downloadDir, { recursive: true });
-    }
     if (!req.file) {
       return res.status(400).json({ error: '没有上传文件' });
     }
 
-    const pdfPath = req.file.path;
-    const fileName = req.file.filename.replace('.pdf', '');
-    
+    const originalName = req.file.originalname || 'file.pdf';
+    const fileName = originalName.replace(/\.pdf$/i, '').replace(/[^a-z0-9-_]/gi, '_');
+
     console.log(`开始转换文件: ${fileName}`);
 
-    // 读取PDF文件
-    const pdfBuffer = fs.readFileSync(pdfPath);
+    // 从内存读取PDF文件
+    const pdfBuffer = req.file.buffer;
     
     // 解析PDF内容
     const pdfData = await pdfParse(pdfBuffer);
@@ -104,10 +85,11 @@ app.post('/api/convert', upload.single('pdf'), async (req, res) => {
     // 生成Word文件
     buffer = await Packer.toBuffer(doc);
     wordFileName = `${fileName}.docx`;
-    wordPath = path.join(downloadDir, wordFileName);
-    res.status(200).contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document").setHeader("content-disposition", "attachment; filename=\"pdf-1753358176578-242582799.docx\"").send(buffer);
-    
-    // fs.writeFileSync(wordPath, buffer);
+    // 直接返回生成的 docx 二进制（不写入磁盘），为浏览器下载设置正确的文件名
+    res.status(200)
+      .contentType('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+      .setHeader('Content-Disposition', `attachment; filename="${wordFileName}"`)
+      .send(buffer);
 
     // // 记录转换历史
     // const historyItem = {
